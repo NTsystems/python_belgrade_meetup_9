@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Python Meetup tweets</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+    /* Set height of the grid so .leftcontent can be 100% (adjust if needed) */
+    
+    html,
+    body {
+        height: 100%;
+    }
+    
+    .ntlogo {
+        background-color: #262626;
+        margin-right: -15px;
+        margin-left: -15px;
+        display: flex;
+        align-items: center;
+    }
+
+    .title {
+        color: white;
+        font-size: 29px;
+    }
+    
+    
+    .hashtag {
+        color: white;
+        text-shadow: 2px 2px #000000;
+    }
+    
+    .row.content {
+        min-height: 1500px;
+        background-color: #619EC2;
+    }
+    /* Set gray background color and 100% height */
+    
+    .leftcontent {
+        background-color: #619EC2;
+        height: 100%;
+    }
+
+    .rightcontent {
+        background-color: white;
+        height: 100%;
+        min-height: 1500px;
+    }
+    /* Set black background color, white text and some padding */
+    
+    footer {
+        background-color: #555;
+        color: white;
+        padding: 15px;
+    }
+    /* On small screens, set height to 'auto' for leftcontent and grid */
+    
+    @media screen and (max-width: 767px) {
+        .leftcontent {
+            height: auto;
+            padding: 15px;
+        }
+        .row.content {
+            height: 100%;
+        }
+    }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row ntlogo">
+                <div class='col-sm-3'>
+                    <img src='http://ntsystems.rs/wp-content/uploads/2013/06/ntsystems_logo-1.png'>
+                </div>
+                <div class='col-sm-2'></div>
+                <div class='col-sm-7 title '>Python meetup tweets</div>
+        </div>
+        </div>
+        <div class="row content">
+            <div class="col-sm-8 leftcontent">
+                <ul class="nav nav-pills nav-stacked">
+                </ul>
+                <br>
+                <div class="input-group">
+                    <input id='hashtag' type="text" class="form-control" placeholder="Search Hashtags..">
+                    <span class="input-group-btn">
+                    <button class="btn btn-default search" type="button">
+                <span class="glyphicon glyphicon-search"></span>
+                    </button>
+                    </span>
+                </div>
+                <div class='results'>
+                </div>
+            </div>
+            <div class="col-sm-4 rightcontent">
+                <h3>#python count: <strong id='python'></strong></h3>
+                <h3>#iot count: <strong id='iot'></strong></h3>
+                <h3>#bigdata count: <strong id='bigdata'></strong></h3>
+                <br>
+                <h3 style="color:gray;">Live tweets:</h3>
+                <hr>
+                <h3 class="tweets"></h3>
+            </div>
+            <clear-fix>
+        </div>
+    </div>
+    <script>
+    $(document).ready(function() {
+        var tweets_socket = new WebSocket("ws://"+window.location.host+"/socket/");
+        tweets_socket.onmessage = tweet_arrived;
+
+        function tweet_arrived(data) {
+            var json_data = JSON.parse(data.data);
+            $("#python").text(json_data.count.python);
+            $("#iot").text(json_data.count.iot);
+            $("#bigdata").text(json_data.count.bigdata);
+
+            $(".tweets").prepend("<div><h1><small>" + json_data.tweet.hashtags + "</small></h1>" +
+                "<h2>" + json_data.tweet.text + 
+                "/h2><h3>Author <img src='  https://twitter.com/"+json_data.tweet.user.screen_name+"//profile_image?size=mini'> " +
+                json_data.tweet.user.name+"</h3><br><br></div>");
+            $(".tweets div").slice(5).fadeOut().remove();
+        }
+
+        function search() {
+            $.get("tweets/?hashtag=" + $('#hashtag').val(), function(data) {
+                var result = $(".results");
+                result.html("");
+                for (var tweet in data.tweets) {
+                    result.prepend("<h1><small class='hashtag'>" + data.tweets[tweet].hashtag + "</small></h1>" +
+                        "<h2>" + data.tweets[tweet].text + "</h2><h3>Author <img src='  https://twitter.com/"+data.tweets[tweet].screen_name+"//profile_image?size=mini'> "+
+                        data.tweets[tweet].user+"</h3><br><br></div>");
+                }
+            });
+        }
+        $('.search').click(function() {
+            search();
+        });
+        $('#hashtag').keypress(function(e) {
+            if (e.which == 13) {
+                search();
+            }
+        });
+    });
+    </script>
+</body>
+
+</html>

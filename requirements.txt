@@ -1,0 +1,2 @@
+cassandra-driver==3.8.0
+tornado==4.4.2
