@@ -10,4 +10,3 @@ cassandra:
   container_name: cassandra
   ports:
     - "9042:9042"
-    - "7000:7000"
