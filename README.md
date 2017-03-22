@@ -1,4 +1,4 @@
-# python_belgrade_meetup_9
+# Python Belgrade meetup #9
 IoT, Python and Cassandra: A Match Made in Heaven
 
 # Requirements:
