@@ -1,12 +1,23 @@
-meetup:
+version: '2'
+
+networks:
+  demo:
+
+services:
+  cassandra:
+    image: cassandra:3.10
+    container_name: cassandra
+    networks:
+      demo:
+        aliases:
+          - cassandra
+
+  app:
     build: .
-    container_name: meetup
+    container_name: app
     ports:
-        - "8888:8888"
-    links:
-      - cassandra:cassandra
-cassandra:
-  image: cassandra:latest
-  container_name: cassandra
-  ports:
-    - "9042:9042"
+      - "8888:8888"
+    networks:
+      - demo
+    depends_on:
+      - cassandra

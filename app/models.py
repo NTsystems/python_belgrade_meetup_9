@@ -1,7 +1,6 @@
 from cassandra.cluster import Cluster
-import os
 
-cluster = Cluster([os.getenv("CASSANDRA_PORT_9160_TCP_ADDR", '127.0.0.1')])
+cluster = Cluster(['cassandra'])
 session = cluster.connect()
 try:
     session.execute("use tweets")
@@ -35,12 +34,12 @@ def getLastTweets(hashtag):
             'hashtag': tweet.hashtag,
             'user': tweet.user,
             'screen_name': tweet.screen_name
-            })
+        })
+
     return {'tweets': tweets[::-1]}
 
 
 def getCounts():
-
     # get tables count
     python = session.execute("select count(*) from tweets_by_hashtag where hashtag='#python'")[0][0]
     iot = session.execute("select count(*) from tweets_by_hashtag where hashtag='#iot'")[0][0]

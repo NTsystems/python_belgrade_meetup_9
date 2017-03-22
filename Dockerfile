@@ -1,36 +1,27 @@
-FROM phusion/baseimage:0.9.19
+FROM python:3.5.3-slim
 MAINTAINER Nebojsa Mrkic <nebojsa.mrkic@ntsystems.rs>
 
-# Use baseimage-docker's init system
-CMD ["/sbin/my_init"]
+RUN groupadd -r ntsystems && useradd -r -g ntsystems ntsystems
 
-# Install dependencies
-RUN apt-get update && apt-get install -y \
-    python-dev \
-    python-pip \
-    python3-dev \
-    python3-pip
+ENV GOSU_VERSION 1.7
+RUN set -x \
+    && apt-get update && apt-get install -y --no-install-recommends ca-certificates wget \
+    && rm -rf /var/lib/apt/lists/* \
+    && wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture)" \
+    && wget -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture).asc" \
+    && export GNUPGHOME="$(mktemp -d)" \
+    && gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \
+    && gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu \
+    && rm -r "$GNUPGHOME" /usr/local/bin/gosu.asc \
+    && chmod +x /usr/local/bin/gosu \
+    && gosu nobody true \
+    && apt-get purge -y --auto-remove ca-certificates wget
 
-# Copy the required source
-RUN mkdir -p /opt/meetup
-ADD ./requirements.txt /opt/meetup/requirements.txt
+COPY [ "docker-entrypoint.sh", "wait-for-it.sh", "/usr/local/bin/" ]
+COPY ./app /opt/app
 
-# Initialize app
-WORKDIR /opt/meetup
-RUN pip3 install -r requirements.txt
+WORKDIR /opt/app
+EXPOSE 8888
 
-# Add needed files
-ADD ./run.sh /opt/meetup/
-ADD ./models.py /opt/meetup/models.py
-ADD ./api.py /opt/meetup/api.py
-ADD ./index.html /opt/meetup/index.html
-
-# Add runits
-RUN mkdir /etc/service/meetup
-ADD ./run.sh /etc/service/meetup/run
-RUN chmod +x /etc/service/meetup/run
-
-
-# Cleanup
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
+ENTRYPOINT [ "docker-entrypoint.sh" ]
+CMD [ "python", "api.py" ]
