@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Weio Python tweets</title>
+    <script data-main="www/libs/weioLibs" src="www/libs/require.js"></script>
+    <script src="www/libs/jquery/jquery-2.0.2.min.js"></script>
+    <link href="www/libs/bootstrap-3.3.0/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="www/libs/bootstrap-3.3.0/js/bootstrap.min.js"></script>
+    <style>
+    /* Set height of the grid so .fullcontent can be 100% (adjust if needed) */
+    
+    .ntlogo {
+        background-color: #262626;
+        margin-right: -15px;
+        margin-left: -15px;
+                
+        display: flex;
+        align-items: center;
+    }
+    
+    .hashtag {
+        color: white;
+        text-shadow: 2px 2px #619EC2;
+    }
+    
+    .title {
+        color: white;
+        font-size: 29px;
+    }
+    
+    .content {
+        min-height: 1500px;
+        background-color: #619EC2;
+    }
+  
+    @media screen and (max-width: 767px) {
+        .content {
+            height: auto;
+        }
+    }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid content">
+        <div class="row ntlogo">
+                <div class='col-sm-3'>
+                    <img src='http://ntsystems.rs/wp-content/uploads/2013/06/ntsystems_logo-1.png'>
+                </div>
+                <div class='col-sm-2'></div>
+                <div class='col-sm-7 title '>Hello WEIO Display</div>
+        </div>
+        <div>
+            <ul class="nav nav-pills nav-stacked">
+            </ul>
+            <br>
+            <ul class="nav nav-pills nav-stacked"></ul>
+            <br>
+            <div class="col-sm-12 tweets">
+            </div>
+        </div>
+    </div>
+    <script>
+    function onWeioReady() {
+        weioCallbacks.tweet_arrived = tweet_arrived;
+    }
+
+    function tweet_arrived(data) {
+        var tweet = JSON.parse(data);
+        console.log(tweet.user)
+        $(".tweets").prepend("<div><h1><strong class='hashtag'>" + tweet.hashtags + "</strong></h1>" +
+            "<h2>" + tweet.text + "</h2><h3>Author <img src='  https://twitter.com/"+tweet.user.screen_name+"//profile_image?size=mini'> "+
+            tweet.user.name+"</h3><br><br></div>").fadeIn();
+        $(".tweets div").slice(10).fadeOut().remove();
+    }
+    </script>
+</body>
+
+</html>
+
