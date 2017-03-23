@@ -88,9 +88,8 @@
             
             
         }
-        console.log(tweet)
         $(".tweets").prepend("<div><h1><strong class='hashtag'>" + tweet.hashtags + "</strong></h1>" +
-            "<h2>" + tweet.text + "</h2><h3>Author <img src='"+tweet.user.profile_image_url_https+"'>"+
+            "<h2>" + tweet.text + "</h2><h3>Author <img src='"+tweet.user.profile_image_url_https+"'> "+
             tweet.user.name+"</h3><br><br></div>").fadeIn();
         $(".tweets div").slice(10).fadeOut().remove();
     }

@@ -141,7 +141,7 @@
 
             $(".tweets").prepend("<div><h1><small>" + json_data.tweet.hashtags + "</small></h1>" +
                 "<h2>" + json_data.tweet.text + 
-                "/h2><h3>Author <img src='"+json_data.tweet.user.profile_image_url_https+"'> " +
+                "</h2><h3>Author <img src='"+json_data.tweet.user.profile_image_url_https+"'> " +
                 json_data.tweet.user.name+"</h3><br><br></div>");
             $(".tweets div").slice(5).fadeOut().remove();
         }
