@@ -97,7 +97,7 @@
                 <div class='results'>
                 </div>
             </div>
-            <div class="col-sm-4 right">
+            <div class="col-sm-4 rightcontent">
                 <h3>#python count: <strong id='python'></strong></h3>
                 <h3>#iot count: <strong id='iot'></strong></h3>
                 <h3>#bigdata count: <strong id='bigdata'></strong></h3>
@@ -150,9 +150,10 @@
             $.get("tweets/?hashtag=" + $('#hashtag').val(), function(data) {
                 var result = $(".results");
                 result.html("");
+
                 for (var tweet in data.tweets) {
                     result.prepend("<h1><small class='hashtag'>" + data.tweets[tweet].hashtag + "</small></h1>" +
-                        "<h2>" + data.tweets[tweet].text + "</h2><h3>Author <img src='  https://twitter.com/"+data.tweets[tweet].screen_name+"//profile_image?size=mini'> "+
+                        "<h2>" + data.tweets[tweet].text + "</h2><h3>Author <img src='"+data.tweets[tweet].profile_image+"'> "+
                         data.tweets[tweet].user+"</h3><br><br></div>");
                 }
             });

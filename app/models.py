@@ -16,9 +16,9 @@ def addTweet(data):
     source = data.get('source', '')
     full = data.get('full_text', '')
     user = data.get('user', {}).get('name', '')
-    screen_name = data.get('user', {}).get('screen_name')
+    profile_image = data.get('user', {}).get('profile_image_url_https')
     for hashtag in hashtags:
-        insert_tweet_data = insert_tweet.bind([hashtag, content, source, user, screen_name, full])
+        insert_tweet_data = insert_tweet.bind([hashtag, content, source, user, profile_image, full])
         session.execute(insert_tweet_data)
 
 
@@ -32,7 +32,7 @@ def getLastTweets(hashtag):
             'text': tweet.content,
             'hashtag': tweet.hashtag,
             'user': tweet.user,
-            'screen_name': tweet.screen_name
+            'profile_image': tweet.profile_image
         })
 
     return {'tweets': tweets[::-1]}
@@ -61,7 +61,7 @@ def create_tables():
             content text,
             source text,
             user text,
-            screen_name text,
+            profile_image text,
             full_text text,
             primary key ((hashtag), id)
         ) with clustering order by(id desc);
@@ -85,7 +85,7 @@ insert_tweet = session.prepare(
         content,
         source,
         user,
-        screen_name,
+        profile_image,
         full_text
         ) values (?, now(), ?, ?, ?, ?, ?);
     """
