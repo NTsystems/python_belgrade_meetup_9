@@ -81,8 +81,7 @@
                 <div class='col-sm-2'></div>
                 <div class='col-sm-7 title '>Python meetup tweets</div>
         </div>
-        </div>
-        <div class="row content">
+        <div id="presentation" class="row content">
             <div class="col-sm-8 leftcontent">
                 <ul class="nav nav-pills nav-stacked">
                 </ul>
@@ -98,7 +97,7 @@
                 <div class='results'>
                 </div>
             </div>
-            <div class="col-sm-4 rightcontent">
+            <div class="col-sm-4 right">
                 <h3>#python count: <strong id='python'></strong></h3>
                 <h3>#iot count: <strong id='iot'></strong></h3>
                 <h3>#bigdata count: <strong id='bigdata'></strong></h3>
@@ -107,7 +106,14 @@
                 <hr>
                 <h3 class="tweets"></h3>
             </div>
-            <clear-fix>
+        
+        </div>
+        <div id="end_presentation" class='row content' style="display: none;">
+            <h3><img id='end_presentation_user_image' src=''> by <span id='final_tweet_user'</span></h3>
+            <h2 id='final_tweet'></h2>
+            <div class='row text-center'>
+                <img id="presentation_image" src=''>
+            </div>
         </div>
     </div>
     <script>
@@ -117,13 +123,25 @@
 
         function tweet_arrived(data) {
             var json_data = JSON.parse(data.data);
+
+            if(json_data.tweet.end_presentation !== undefined){
+                console.log('hide')
+                $("#presentation_image").attr('src', json_data.tweet.entities.media[0].media_url_https);
+                $("#end_presentation_user_image").attr('src', json_data.tweet.user.profile_image_url_https);
+                $("#final_tweet").text(json_data.tweet.text);
+                $("#final_tweet_user").text(json_data.tweet.user.name);
+                $("#presentation").hide();
+                $("#end_presentation").show();
+            
+            
+            }
             $("#python").text(json_data.count.python);
             $("#iot").text(json_data.count.iot);
             $("#bigdata").text(json_data.count.bigdata);
 
             $(".tweets").prepend("<div><h1><small>" + json_data.tweet.hashtags + "</small></h1>" +
                 "<h2>" + json_data.tweet.text + 
-                "/h2><h3>Author <img src='  https://twitter.com/"+json_data.tweet.user.screen_name+"//profile_image?size=mini'> " +
+                "/h2><h3>Author <img src='"+json_data.tweet.user.profile_image_url_https+"'> " +
                 json_data.tweet.user.name+"</h3><br><br></div>");
             $(".tweets div").slice(5).fadeOut().remove();
         }

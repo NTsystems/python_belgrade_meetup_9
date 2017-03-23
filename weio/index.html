@@ -51,7 +51,7 @@
                 <div class='col-sm-2'></div>
                 <div class='col-sm-7 title '>Hello WEIO Display</div>
         </div>
-        <div>
+        <div id="presentation">
             <ul class="nav nav-pills nav-stacked">
             </ul>
             <br>
@@ -60,7 +60,15 @@
             <div class="col-sm-12 tweets">
             </div>
         </div>
+        <div id="end_presentation" style="display: none;">
+            <h3><img id='end_presentation_user_image' src=''> by <span id='final_tweet_user'</span></h3>
+            <h2 id='final_tweet'></h2>
+            <div class='row text-center'>
+                <img id="presentation_image" src=''>
+            </div>
+        </div>
     </div>
+
     <script>
     function onWeioReady() {
         weioCallbacks.tweet_arrived = tweet_arrived;
@@ -68,9 +76,21 @@
 
     function tweet_arrived(data) {
         var tweet = JSON.parse(data);
-        console.log(tweet.user)
+        
+        if(tweet.end_presentation !== undefined){
+            console.log('hide')
+            $("#presentation_image").attr('src', tweet.entities.media[0].media_url_https);
+            $("#end_presentation_user_image").attr('src', tweet.user.profile_image_url_https);
+            $("#final_tweet").text(tweet.text);
+            $("#final_tweet_user").text(tweet.user.name);
+            $("#presentation").hide();
+            $("#end_presentation").show();
+            
+            
+        }
+        console.log(tweet)
         $(".tweets").prepend("<div><h1><strong class='hashtag'>" + tweet.hashtags + "</strong></h1>" +
-            "<h2>" + tweet.text + "</h2><h3>Author <img src='  https://twitter.com/"+tweet.user.screen_name+"//profile_image?size=mini'> "+
+            "<h2>" + tweet.text + "</h2><h3>Author <img src='"+tweet.user.profile_image_url_https+"'>"+
             tweet.user.name+"</h3><br><br></div>").fadeIn();
         $(".tweets div").slice(10).fadeOut().remove();
     }
@@ -78,4 +98,3 @@
 </body>
 
 </html>
-

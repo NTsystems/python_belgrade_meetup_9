@@ -7,8 +7,7 @@ try:
 except Exception as e:
     print(str(e))
     session.execute("create keyspace tweets with replication = {'class': 'SimpleStrategy', 'replication_factor': '1'}")
-
-session = cluster.connect('tweets')
+    session.execute("use tweets")
 
 
 def addTweet(data):

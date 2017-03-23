@@ -21,12 +21,13 @@ hashtags = ['#python', '#iot', '#bigdata']
 
 # This is a basic listener that just prints received tweets to stdout.
 class StdOutListener(StreamListener):
-
+    end_presentation = False
     def on_data(self, data):
+        if self.end_presentation:
+            return True
         data = json.loads(data)
         tweet_hashtags = ["#"+x['text'].lower() for x in data.get('entities', {}).get('hashtags', [])]
         if tweet_hashtags:
-            print tweet_hashtags
             if "#python" in tweet_hashtags:
                 digitalWrite(18, LOW)
                 digitalWrite(19, HIGH)
@@ -40,10 +41,16 @@ class StdOutListener(StreamListener):
                 digitalWrite(19, HIGH)
                 digitalWrite(20, LOW)
             received_hashtags = set(tweet_hashtags).intersection(set(hashtags))
+            
             if received_hashtags:
                 data['hashtags'] = list(received_hashtags)
+                if 'NTsystemsSerbia' in data.get('user', {}).get('screen_name', None):
+                    data['end_presentation'] = True 
+                    self.end_presentation = True
+                
                 serverPush('tweet_arrived', json.dumps(data))
                 try:
+                    requests.post("http://192.168.1.15:8888/tweets/", json.dumps(data))
                     requests.post("http://192.168.1.160:8880/tweets/", json.dumps(data))
                 except:
                     pass
@@ -63,4 +70,3 @@ def twitter():
 
     # This line filter Twitter Streams to capture data by the keywords: 'python', 'javascript', 'ruby'
     stream.filter(track=hashtags)
-
