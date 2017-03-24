@@ -19,7 +19,7 @@ access_token = '842027467024027650-uX3H2D1N4RFJ6NkDMeG9gyQH017w2yn'
 access_token_secret = 'IZAxzBMJZr35AQld3htm4sYMFytC2zE11pcXx4euqv4Vt'
 hashtags = ['#python', '#iot', '#bigdata']
 
-# This is a basic listener that just prints received tweets to stdout.
+# This is a basic listener that just prints received tweets to websocket and sends them to server.
 class StdOutListener(StreamListener):
     end_presentation = False
     def on_data(self, data):
@@ -50,8 +50,7 @@ class StdOutListener(StreamListener):
                 
                 serverPush('tweet_arrived', json.dumps(data))
                 try:
-                    requests.post("http://192.168.1.15:8888/tweets/", json.dumps(data))
-                    requests.post("http://192.168.1.160:8880/tweets/", json.dumps(data))
+                    requests.post("http://meetup.ntsystems.rs/tweets/", json.dumps(data))
                 except:
                     pass
         return True

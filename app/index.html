@@ -118,7 +118,7 @@
     </div>
     <script>
     $(document).ready(function() {
-        var tweets_socket = new WebSocket("ws://"+window.location.host+"/socket/");
+        var tweets_socket = new WebSocket("ws://"+window.location.hostname+":8880/socket/");
         tweets_socket.onmessage = tweet_arrived;
 
         function tweet_arrived(data) {
