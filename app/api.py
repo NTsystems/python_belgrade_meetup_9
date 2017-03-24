@@ -11,7 +11,6 @@ root = os.path.dirname(__file__)
 
 class Tweets(tornado.web.RequestHandler):
     def post(self):
-
         try:
             data = json.loads(self.request.body.decode('utf-8'))
             models.add_tweet(data)
@@ -19,19 +18,15 @@ class Tweets(tornado.web.RequestHandler):
             if clients and data.get('hashtags', []):
                 clients[0].send_message({'tweet': data, 'count': count})
             self.write({'status': "ok"})
-        except Exception as e:
-            print(str(e))
-            self.write()
+        except:
+            self.write({'status': "error"})
 
     def get(self):
         try:
-            print('get hashtags')
             hashtag = self.get_argument("hashtag", "")
-            print(hashtag)
             tweets = models.get_last_tweets(hashtag)
             self.write(tweets)
-        except Exception as e:
-            print(str(e))
+        except:
             pass
 
 
