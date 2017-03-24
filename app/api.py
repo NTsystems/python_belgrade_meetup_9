@@ -32,11 +32,9 @@ class Tweets(tornado.web.RequestHandler):
 
 class SocketHandler(websocket.WebSocketHandler):
     def check_origin(self, origin):
-        print(origin)
         return True
 
     def open(self):
-        print('open')
         if self not in clients:
             clients.append(self)
 
