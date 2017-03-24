@@ -10,7 +10,7 @@ except Exception as e:
     session.execute("use tweets")
 
 
-def addTweet(data):
+def add_tweet(data):
     hashtags = data.get('hashtags', [])
     content = data.get('text', '')
     source = data.get('source', '')
@@ -22,7 +22,7 @@ def addTweet(data):
         session.execute(insert_tweet_data)
 
 
-def getLastTweets(hashtag):
+def get_last_tweets(hashtag):
     cassandra_tweets_prepare = session.prepare("select * from tweets_by_hashtag where hashtag=? limit 10")
     cassandra_tweets_query = cassandra_tweets_prepare.bind(['#'+hashtag])
     cassandra_tweets = session.execute(cassandra_tweets_query)
@@ -38,7 +38,7 @@ def getLastTweets(hashtag):
     return {'tweets': tweets[::-1]}
 
 
-def getCounts():
+def get_counts():
     # get tables count
     python = session.execute("select count(*) from tweets_by_hashtag where hashtag='#python'")[0][0]
     iot = session.execute("select count(*) from tweets_by_hashtag where hashtag='#iot'")[0][0]

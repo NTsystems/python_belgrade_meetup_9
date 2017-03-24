@@ -14,8 +14,8 @@ class Tweets(tornado.web.RequestHandler):
 
         try:
             data = json.loads(self.request.body.decode('utf-8'))
-            models.addTweet(data)
-            count = models.getCounts()
+            models.add_tweet(data)
+            count = models.get_counts()
             if clients and data.get('hashtags', []):
                 clients[0].send_message({'tweet': data, 'count': count})
             self.write({'status': "ok"})
@@ -28,7 +28,7 @@ class Tweets(tornado.web.RequestHandler):
             print('get hashtags')
             hashtag = self.get_argument("hashtag", "")
             print(hashtag)
-            tweets = models.getLastTweets(hashtag)
+            tweets = models.get_last_tweets(hashtag)
             self.write(tweets)
         except Exception as e:
             print(str(e))
