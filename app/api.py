@@ -23,7 +23,7 @@ class Tweets(tornado.web.RequestHandler):
 
     def get(self):
         try:
-            hashtag = self.get_argument("hashtag", "")
+            hashtag = self.get_argument("hashtag", "").lower()
             tweets = models.get_last_tweets(hashtag)
             self.write(tweets)
         except:
